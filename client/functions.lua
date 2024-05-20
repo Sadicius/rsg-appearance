@@ -78,32 +78,32 @@ Citizen.CreateThread(function()
     CameraPrompt = PromptRegisterBegin()
     PromptSetControlAction(CameraPrompt, RSG.Prompt.CameraUp)
     PromptSetControlAction(CameraPrompt, RSG.Prompt.CameraDown)
-    str = CreateVarString(10, 'LITERAL_STRING', str)
-    PromptSetText(CameraPrompt, str)
+    local strc = CreateVarString(10, 'LITERAL_STRING', str)
+    PromptSetText(CameraPrompt, strc)
     PromptSetEnabled(CameraPrompt, true)
     PromptSetVisible(CameraPrompt, true)
     PromptSetStandardMode(CameraPrompt, 1)
     PromptSetGroup(CameraPrompt, RoomPrompts)
     PromptRegisterEnd(CameraPrompt)
 
-    str = RSG.RotatePromptText
+    local str1 = RSG.RotatePromptText
     RotatePrompt = PromptRegisterBegin()
     PromptSetControlAction(RotatePrompt, RSG.Prompt.RotateLeft)
     PromptSetControlAction(RotatePrompt, RSG.Prompt.RotateRight)
-    str = CreateVarString(10, 'LITERAL_STRING', str)
-    PromptSetText(RotatePrompt, str)
+    local stra = CreateVarString(10, 'LITERAL_STRING', str1)
+    PromptSetText(RotatePrompt, stra)
     PromptSetEnabled(RotatePrompt, true)
     PromptSetVisible(RotatePrompt, true)
     PromptSetStandardMode(RotatePrompt, 1)
     PromptSetGroup(RotatePrompt, RoomPrompts)
     PromptRegisterEnd(RotatePrompt)
 
-    str = RSG.ZoomPromptText
+    local str2 = RSG.ZoomPromptText
     ZoomPrompt = PromptRegisterBegin()
     PromptSetControlAction(ZoomPrompt, RSG.Prompt.Zoom1)
     PromptSetControlAction(ZoomPrompt, RSG.Prompt.Zoom2)
-    str = CreateVarString(10, 'LITERAL_STRING', str)
-    PromptSetText(ZoomPrompt, str)
+    local strb = CreateVarString(10, 'LITERAL_STRING', str2)
+    PromptSetText(ZoomPrompt, strb)
     PromptSetEnabled(ZoomPrompt, true)
     PromptSetVisible(ZoomPrompt, true)
     PromptSetStandardMode(ZoomPrompt, 1)
@@ -111,8 +111,7 @@ Citizen.CreateThread(function()
     PromptRegisterEnd(ZoomPrompt)
 end)
 
-function ChangeOverlays(name, visibility, tx_id, tx_normal, tx_material, tx_color_type, tx_opacity, tx_unk, palette_id,
-    palette_color_primary, palette_color_secondary, palette_color_tertiary, var, opacity)
+function ChangeOverlays(name, visibility, tx_id, tx_normal, tx_material, tx_color_type, tx_opacity, tx_unk, palette_id, palette_color_primary, palette_color_secondary, palette_color_tertiary, var, opacity)
     for k, v in pairs(Overlays.overlay_all_layers) do
         if v.name == name then
             v.visibility = visibility
@@ -151,16 +150,13 @@ function ApplyOverlays(overlayTarget)
         Citizen.InvokeNative(0xB63B9178D0F58D82, textureId) -- reset texture
         Citizen.InvokeNative(0x6BEFAA907B076859, textureId) -- remove texture
     end
-    textureId = Citizen.InvokeNative(0xC5E7204F322E49EB, Overlays.current_texture_settings.albedo,
-    Overlays.current_texture_settings.normal, Overlays.current_texture_settings.material); -- create texture
+    textureId = Citizen.InvokeNative(0xC5E7204F322E49EB, Overlays.current_texture_settings.albedo, Overlays.current_texture_settings.normal, Overlays.current_texture_settings.material); -- create texture
     for k, v in pairs(Overlays.overlay_all_layers) do
         if v.visibility ~= 0 then
-            local overlay_id = Citizen.InvokeNative(0x86BB5FF45F193A02, textureId, v.tx_id, v.tx_normal, v.tx_material,
-                v.tx_color_type, v.tx_opacity, v.tx_unk); -- create overlay
+            local overlay_id = Citizen.InvokeNative(0x86BB5FF45F193A02, textureId, v.tx_id, v.tx_normal, v.tx_material, v.tx_color_type, v.tx_opacity, v.tx_unk); -- create overlay
             if v.tx_color_type == 0 then
                 Citizen.InvokeNative(0x1ED8588524AC9BE1, textureId, overlay_id, v.palette); -- apply palette
-                Citizen.InvokeNative(0x2DF59FFE6FFD6044, textureId, overlay_id, v.palette_color_primary,
-                    v.palette_color_secondary, v.palette_color_tertiary) -- apply palette colours
+                Citizen.InvokeNative(0x2DF59FFE6FFD6044, textureId, overlay_id, v.palette_color_primary, v.palette_color_secondary, v.palette_color_tertiary) -- apply palette colours
             end
             Citizen.InvokeNative(0x3329AAE2882FC8E4, textureId, overlay_id, v.var); -- apply overlay variant
             Citizen.InvokeNative(0x6C76BC24F8BB709A, textureId, overlay_id, v.opacity); -- apply overlay opacity
@@ -229,7 +225,7 @@ end
 
 function SpawnPeds()
     Setup()
-
+    DisplayHud(false)
     DisplayRadar(false)
     Citizen.InvokeNative(0x0E3F4AF2D63491FB)
     Citizen.InvokeNative(0xFA08722A5EA82DA7, "Online_Character_Editor")
@@ -408,41 +404,40 @@ CreatePedAtCoords = function(model, coords, isNetworked)
 end
 
 function StartPrompts()
-	lightsOn = false
+    lightsOn = false
     while IsInCharCreation do
         Wait(0)
         DrawLightWithRange(camloc.x, camloc.y, camloc.z, 255, 255, 255, 10.0, 100.0)
-
         local label = CreateVarString(10, 'LITERAL_STRING', RSG.GroupPromptText)
         PromptSetActiveGroupThisFrame(RoomPrompts, label)
-    
+
         if IsControlPressed(2, RSG.Prompt.CameraUp) then
             local CamCoords = GetCamCoord(CharacterCreatorCamera)
             local z = math.min(CamCoords.z + 0.01, camloc.z + 1)
             SetCamCoord(CharacterCreatorCamera, camloc.x, camloc.y, z)
         end
-    
+
         if IsControlPressed(2, RSG.Prompt.CameraDown) then
             local CamCoords = GetCamCoord(CharacterCreatorCamera)
             local HasZ, PosZ = GetGroundZAndNormalFor_3dCoord(camloc.x, camloc.y, camloc.z + 0.5)
             local z = math.max(CamCoords.z - 0.01, PosZ + 0.2)
             SetCamCoord(CharacterCreatorCamera, camloc.x, camloc.y, z)
         end
-    
+
         if IsControlPressed(2, RSG.Prompt.RotateLeft) then
             local heading = GetEntityHeading(PlayerPedId())
             SetPedDesiredHeading(PlayerPedId(), heading - 40)
         end
-    
+
         if IsControlPressed(2, RSG.Prompt.RotateRight) then
             local heading = GetEntityHeading(PlayerPedId())
             SetPedDesiredHeading(PlayerPedId(), heading + 40)
         end
-    
+
         if IsControlPressed(2, RSG.Prompt.Zoom1) then
             SetCamFov(CharacterCreatorCamera, GetCamFov(CharacterCreatorCamera) - 1.5)
         end
-    
+
         if IsControlPressed(2, RSG.Prompt.Zoom2) then
             SetCamFov(CharacterCreatorCamera, GetCamFov(CharacterCreatorCamera) + 1.5)
         end
@@ -489,7 +484,6 @@ function StartCharacterCreatorCamera(selected, camera)
     FirstMenu()
 end
 
-
 function PrepareCreatorMusic()
     Citizen.InvokeNative(0x120C48C614909FA4, "AZL_RDRO_Character_Creation_Area", true)                     -- CLEAR_AMBIENT_ZONE_LIST_STATE
     Citizen.InvokeNative(0x9D5A25BADB742ACD, "AZL_RDRO_Character_Creation_Area_Other_Zones_Disable", true) -- CLEAR_AMBIENT_ZONE_LIST_STATE
@@ -524,7 +518,6 @@ function EndCharacterCreatorCam(anim, anim1)
         Citizen.InvokeNative(0x84EEDB2C6E650000, anim1)
     end
     TriggerServerEvent("rsg-appearance:SetPlayerBucket" , 0)
-
     local clothesHashes = ConvertCacheToHash(ClothesCache)
 
     TriggerServerEvent("rsg-appearance:SaveSkin", CreatorCache, clothesHashes)
@@ -604,7 +597,7 @@ function FotoMugshots()
             DrawText3D(-558.64, -3782.30, 238.5, FirstName .. " " .. LastName, { 255, 255, 255, 255 })
         end
     end)
-    ShowBusyspinnerWithText("take a screenshot now")
+    ShowBusyspinnerWithText(FirstName .. " " .. LastName.." take a screenshot now")
     PlaySoundFrontend("Ready_Up_Flash", "RDRO_In_Game_Menu_Sounds", true, 0)
     TakePhoto()
     Wait(7000)
@@ -812,18 +805,15 @@ function LoadHair(target, data)
                 if tonumber(data.hair.model) > 0 then
                     if IsPedMale(target) then
                         if hairs_list["male"]["hair"][tonumber(data.hair.model)] ~= nil then
-                            if hairs_list["male"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)] ~= nil then       
+                            if hairs_list["male"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)] ~= nil then
                                 local hair = hairs_list["male"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)].hash
                                 NativeSetPedComponentEnabled(target, tonumber(hair), false, true, true)
                             end
-
                         end
-
                     else
                         if hairs_list["female"]["hair"][tonumber(data.hair.model)] ~= nil then
-                            if hairs_list["female"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)] ~=
-                                nil then
-                                    local hair = hairs_list["female"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)].hash
+                            if hairs_list["female"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)] ~= nil then
+                                local hair = hairs_list["female"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)].hash
                                 NativeSetPedComponentEnabled(target, tonumber(hair), false, true, true)
                             end
                         end
@@ -851,12 +841,10 @@ function LoadBeard(target, data)
                 if tonumber(data.beard.model) > 0 then
                     if IsPedMale(target) then
                         if hairs_list["male"]["beard"][tonumber(data.beard.model)] ~= nil then
-                            if hairs_list["male"]["beard"][tonumber(data.beard.model)][tonumber(data.beard.texture)] ~=
-                                nil then
-                                    local beard = hairs_list["male"]["beard"][tonumber(data.beard.model)][tonumber(data.beard.texture)].hash
+                            if hairs_list["male"]["beard"][tonumber(data.beard.model)][tonumber(data.beard.texture)] ~= nil then
+                                local beard = hairs_list["male"]["beard"][tonumber(data.beard.model)][tonumber(data.beard.texture)].hash
                                 NativeSetPedComponentEnabled(target, tonumber(beard), false, true, true)
                             end
-
                         end
                     end
                 else
@@ -874,8 +862,6 @@ function LoadBeard(target, data)
         end
     end
 end
-
-
 
 function LoadHead(target, data)
     if IsPedMale(target) then
@@ -908,7 +894,6 @@ function LoadFeatures(target, data)
         if data[k] ~= nil then
             local value = data[k] / 100
             NativeSetPedFaceFeature(target, v, value)
-
             if v == 'teeth' then
                 if IsPedMale(PlayerPedId()) then
                     Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), ComponentsMale["teeth"][tonumber(data.teeth) or 1], true, true, true)
@@ -916,7 +901,6 @@ function LoadFeatures(target, data)
                     Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), ComponentsFemale["teeth"][tonumber(data.teeth) or 1], true, true, true)
                 end
             end
-
             Citizen.InvokeNative(0xCC8CA3E88256E58F, target, false, true, true, true, false)
         end
     end
@@ -925,9 +909,7 @@ end
 function LoadHeight(target, data)
     if data.height then
         local height = tonumber(data.height * 0.01)
-
         Wait(100)
-
         SetPedScale(target, height)
     end
 end
@@ -960,56 +942,45 @@ end
 function LoadOverlays(target, data)
 
     if tonumber(data.eyebrows_t) ~= nil and tonumber(data.eyebrows_op) ~= nil then
-        ChangeOverlays("eyebrows", 1, tonumber(data.eyebrows_t), 0, 0, 0, 1.0, 0, tonumber(data.eyebrows_id) or 1,
-            tonumber(data.eyebrows_c1) or 0, 0, 0, 0, tonumber(data.eyebrows_op / 100))
+        ChangeOverlays("eyebrows", 1, tonumber(data.eyebrows_t), 0, 0, 0, 1.0, 0, tonumber(data.eyebrows_id) or 1, tonumber(data.eyebrows_c1) or 0, 0, 0, 0, tonumber(data.eyebrows_op / 100))
     else
         ChangeOverlays("eyebrows", 1, 1, 0, 0, 0, 1.0, 0, 10, 0, 0, 0, 0, 1.0)
     end
 
     if tonumber(data.scars_t) ~= nil and tonumber(data.scars_op) ~= nil then
-        ChangeOverlays("scars", 1, tonumber(data.scars_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0),
-            tonumber(data.scars_op / 100))
+        ChangeOverlays("scars", 1, tonumber(data.scars_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0), tonumber(data.scars_op / 100))
     end
 
     if tonumber(data.ageing_t) ~= nil and tonumber(data.ageing_op) ~= nil then
-        ChangeOverlays("ageing", 1, tonumber(data.ageing_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0),
-            tonumber(data.ageing_op / 100))
+        ChangeOverlays("ageing", 1, tonumber(data.ageing_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0), tonumber(data.ageing_op / 100))
     end
 
     if tonumber(data.freckles_t) ~= nil and tonumber(data.freckles_op) ~= nil then
-        ChangeOverlays("freckles", 1, tonumber(data.freckles_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0),
-            tonumber(data.freckles_op / 100))
+        ChangeOverlays("freckles", 1, tonumber(data.freckles_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0), tonumber(data.freckles_op / 100))
     end
 
     if tonumber(data.moles_t) ~= nil and tonumber(data.moles_op) ~= nil then
-        ChangeOverlays("moles", 1, tonumber(data.moles_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0),
-            tonumber(data.moles_op / 100))
+        ChangeOverlays("moles", 1, tonumber(data.moles_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0), tonumber(data.moles_op / 100))
     end
 
     if tonumber(data.spots_t) ~= nil and tonumber(data.spots_op) ~= nil then
-        ChangeOverlays("spots", 1, tonumber(data.spots_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0),
-            tonumber(data.spots_op / 100))
+        ChangeOverlays("spots", 1, tonumber(data.spots_t), 0, 0, 1, 1.0, 0, tonumber(0), 0, 0, 0, tonumber(0), tonumber(data.spots_op / 100))
     end
 
     if tonumber(data.eyeliners_t) ~= nil and tonumber(data.eyeliners_op) ~= nil then
-        ChangeOverlays("eyeliners", 1, 1, 0, 0, 0, 1.0, 0, tonumber(data.eyeliners_id) or 1,
-            tonumber(data.eyeliners_c1) or 0, 0, 0, tonumber(data.eyeliners_t), tonumber(data.eyeliners_op / 100))
+        ChangeOverlays("eyeliners", 1, 1, 0, 0, 0, 1.0, 0, tonumber(data.eyeliners_id) or 1, tonumber(data.eyeliners_c1) or 0, 0, 0, tonumber(data.eyeliners_t), tonumber(data.eyeliners_op / 100))
     end
 
     if tonumber(data.shadows_t) ~= nil and tonumber(data.shadows_op) ~= nil then
-        ChangeOverlays("shadows", 1, tonumber(1), 0, 0, 0, 1.0, 0, tonumber(data.shadows_id) or 1,
-            tonumber(data.shadows_c1) or 0, 0, 0, tonumber(data.shadows_t), tonumber(data.shadows_op / 100))
+        ChangeOverlays("shadows", 1, tonumber(1), 0, 0, 0, 1.0, 0, tonumber(data.shadows_id) or 1, tonumber(data.shadows_c1) or 0, 0, 0, tonumber(data.shadows_t), tonumber(data.shadows_op / 100))
     end
 
     if tonumber(data.lipsticks_t) ~= nil and tonumber(data.lipsticks_op) ~= nil then
-        ChangeOverlays("lipsticks", 1, 1, 0, 0, 0, 1.0, 0, tonumber(data.lipsticks_id) or 1,
-            tonumber(data.lipsticks_c1) or 0, tonumber(data.lipsticks_c2) or 0, 0, tonumber(data.lipsticks_t),
-            tonumber(data.lipsticks_op / 100))
+        ChangeOverlays("lipsticks", 1, 1, 0, 0, 0, 1.0, 0, tonumber(data.lipsticks_id) or 1, tonumber(data.lipsticks_c1) or 0, tonumber(data.lipsticks_c2) or 0, 0, tonumber(data.lipsticks_t), tonumber(data.lipsticks_op / 100))
     end
 
     if tonumber(data.blush_t) ~= nil and tonumber(data.blush_op) ~= nil then
-        ChangeOverlays("blush", 1, tonumber(data.blush_t), 0, 0, 0, 1.0, 0, tonumber(data.blush_id) or 1,
-            tonumber(data.blush_c1) or 0, 0, 0, 0, tonumber(data.blush_op / 100))
+        ChangeOverlays("blush", 1, tonumber(data.blush_t), 0, 0, 0, 1.0, 0, tonumber(data.blush_id) or 1, tonumber(data.blush_c1) or 0, 0, 0, 0, tonumber(data.blush_op / 100))
     end
 
     if tonumber(data.beardstabble_t) ~= nil and tonumber(data.beardstabble_op) ~= nil then
@@ -1048,14 +1019,13 @@ function GetMaxTexturesForModel(category, model, isClothing)
         model = 1
     end
     local gender = IsPedMale(PlayerPedId()) and "male" or "female"
-    
+
     if isClothing then
         return #clothing[gender][category][model]
     else
         return #hairs_list[gender][category][model]
     end
 end
-
 
 function NativeSetPedFaceFeature(ped, index, value)
     Citizen.InvokeNative(0x5653AB26C82938CF, ped, index, value)
@@ -1179,8 +1149,8 @@ function NativeUpdatePedVariation(ped)
     end
 end
 
-function NativeSetTextureOutfitTints(ped,category,palette,tint0,tint1,tint2)
-    return Citizen.InvokeNative(0x4EFC1F8FF1AD94DE,ped,category,palette,tint0,tint1,tint2)
+function NativeSetTextureOutfitTints(ped, category, palette, tint0, tint1, tint2)
+    return Citizen.InvokeNative(0x4EFC1F8FF1AD94DE, ped, category, palette, tint0, tint1, tint2)
 end
 
 -- light loop for select character

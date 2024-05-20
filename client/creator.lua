@@ -291,7 +291,7 @@ end, false)
 local function checkStrings(input)
     if RSG.ProfanityWords[input:lower()] then return false end
     if not string.match(input, '%u%l*') then
-        RSGCore.Functions.Notify('Input must start with a capital letter, and only letters are allowed.', 'error', 10000)
+        lib.notify({ title = 'Input must start with a capital letter, and only letters are allowed.', type = 'error', duration = 10000 })
         return false
     end
     return true
