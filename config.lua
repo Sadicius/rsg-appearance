@@ -1,6 +1,6 @@
 RSG = {}
 
-RSG.WelcomeText = "WELCOME TO RSG FRAMEWORK"
+RSG.WelcomeText = "BIENVENIDO AL SERVIDOR"
 
 RSG.ProfanityWords = {
     ['bad word'] = true,
@@ -8,10 +8,10 @@ RSG.ProfanityWords = {
     ['ass'] = true
 }
 
-RSG.CameraPromptText = 'Up/Down'
-RSG.RotatePromptText = 'Left/Right'
-RSG.ZoomPromptText = 'Zoom'
-RSG.GroupPromptText = 'RSGCore Creator'
+RSG.CameraPromptText = 'Camara Arriba/Abajo'
+RSG.RotatePromptText = 'Derecha/Izquierda'
+RSG.ZoomPromptText = 'Acercar/Alejar'
+RSG.GroupPromptText = 'Creador de personajes'
 
 RSG.Prompt = {
     MalePrompt = 0xA65EBAB4,
@@ -21,114 +21,113 @@ RSG.Prompt = {
     CameraDown = 0xD27782E3,
     RotateLeft = 0x7065027D,
     RotateRight = 0xB4E465B4,
-    Zoom1 = 0x62800C92,
-    Zoom2 = 0x8BDE7443,
+    Zoom1 = 0x07CE1E61,
+    Zoom2 = 0xF84FA74F,
 }
 
 RSG.Texts = {
-    Body = "Body",
-    Face = "Face",
-    Hair_beard = "Hair & Beard",
-    HairStyle = "Hair Style",
-    HairColor = "Hair Color",
-    BeardStyle = "Beard Style",
-    BeardColor = "Beard Color",
-    Makeup = "Makeup",
-    Appearance = "Appearance",
-    Slim = "Slim",
-    Sporty = "Sporty",
-    Medium = "Medium",
-    Fat = "Fat",
-    Strong = "Strong",
-    FaceWidth = "Face Width",
-    SkinTone = "Skin Tone",
-    Eyes = "Eyes",
-    Eyelids = "Eyelids",
-    Eyebrows = "Eyebrows",
-    Nose = "Nose",
-    Mouth = "Mouth",
-    Teeth = "Teeth",
-    Cheekbones = "Cheek Bones",
-    Jaw = "Jaw",
-    Ears = "Ears",
-    Chin = "Chin",
-    Defects = "Defects",
-    Hair = "Hair",
-    Beard = "Beard",
-    Type = "Type",
-    Visibility = "Visibility",
-    ColorPalette = "Color Palette ",
-    ColorFirstrate = "Color First-rate",
-    Eyebrow = "Eyebrows",
-    NoseCurvature = "Nose Curvature",
-    UP_DOWN = "UP / DOWN",
-    left_right = "left / right",
-    UpperLipHeight = "Upper Lip Height",
-    UpperLipWidth = "Upper Lip Width",
-    UpperLipDepth = "Upper Lip Depth",
-    LowerLipHeight = "Lower Lip Height",
-    LowerLipWidth = "Lower Lip Width",
-    LowerLipDepth = "Lower Lip Depth",
-    Make_up = "Make-up",
-    Older = "Older",
-    Scars = "Type Scars",
-    Freckles = "Type Freckles",
-    Moles = "Moles",
-    Disadvantages = "Disadvantages",
-    Spots = "Spots",
-    Shadow = "Shadow",
-    ColorShadow = "Color Shadow",
-    ColorFirst_Class = "Color First-Class Delusion",
-    Blushing_Cheek = "Blushing Cheek",
-    blush_id = "Cheek Blush Color",
-    blush_c1 = "Color First Degree Cheek Redness",
-    Lipstick = "Type Lipstick",
-    ColorLipstick = "Color Lipstick",
-    lipsticks_c1 = "First-Class Color Lipstick",
-    lipsticks_c2 = "Second Color Lipstick",
-    Eyeliners = "Eyeliners",
-    eyeliners_id = "Color Eyeliners",
-    eyeliners_c1 = "Color main Eyeliners",
-    save = "Save",
-    Options = "Options",
-    align = "top-left",
-    Style = "Style ",
-    Color = "Color ",
+    Body = "Cuerpo",
+    Face = "Cara",
+    Hair_beard = "Cabello y Barba",
+    HairStyle = "Estilo de Cabello",
+    HairColor = "Color de Cabello",
+    BeardStyle = "Estilo de Barba",
+    BeardColor = "Color de Barba",
+    Makeup = "Maquillaje",
+    Appearance = "Apariencia",
+    Slim = "Delgado",
+    Sporty = "Deportivo",
+    Medium = "Mediano",
+    Fat = "Gordo",
+    Strong = "Fuerte",
+    FaceWidth = "Anchura de la Cara",
+    SkinTone = "Tono de Piel",
+    Eyes = "Ojos",
+    Eyelids = "Parpados",
+    Eyebrows = "Cejas",
+    Nose = "Nariz",
+    Mouth = "Boca",
+    Teeth = "Dientes",
+    Cheekbones = "Pomulos",
+    Jaw = "Mandibula",
+    Ears = "Orejas",
+    Chin = "Barbilla",
+    Defects = "Defectos",
+    Hair = "Cabello",
+    Beard = "Barba",
+    Type = "Tipo",
+    Visibility = "Visibilidad",
+    ColorPalette = "Paleta de Colores",
+    ColorFirstrate = "Color de Primera Calidad",
+    Eyebrow = "Ceja",
+    NoseCurvature = "Curvatura de la Nariz",
+    UP_DOWN = 'Camara Arriba/Abajo',
+    left_right = 'Derecha/Izquierda',
+    UpperLipHeight = "Altura del Labio Superior",
+    UpperLipWidth = "Anchura del Labio Superior",
+    UpperLipDepth = "Profundidad del Labio Superior",
+    LowerLipHeight = "Altura del Labio Inferior",
+    LowerLipWidth = "Anchura del Labio Inferior",
+    LowerLipDepth = "Profundidad del Labio Inferior",
+    Make_up = "Maquillaje",
+    Older = "Mas Viejo",
+    Scars = "Tipo de Cicatrices",
+    Freckles = "Tipo de Pecas",
+    Moles = "Lunares",
+    Disadvantages = "Desventajas",
+    Spots = "Manchas",
+    Shadow = "Sombra",
+    ColorShadow = "Color de la Sombra",
+    ColorFirst_Class = "Color de Primera Clase",
+    Blushing_Cheek = "Mejillas Ruborizadas",
+    blush_id = "Color de Rubor en las Mejillas",
+    blush_c1 = "Color de Primer Grado de Enrojecimiento de Mejillas",
+    Lipstick = "Tipo de Labial",
+    ColorLipstick = "Color del Labial",
+    lipsticks_c1 = "Labial de Color de Primera Clase",
+    lipsticks_c2 = "Labial de Segundo Color",
+    Eyeliners = "Delineadores",
+    eyeliners_id = "Color de Delineadores",
+    eyeliners_c1 = "Color Principal de Delineadores",
+    save = "Guardar",
+    Options = "Opciones",
+    align = "arriba-izquierda",
+    Style = "Estilo",
+    Color = "Color",
     Size = "Size",
-    Width = "Width ",
-    Height = "Height",
-    Depth = "Depth",
-    Waist = "Waist",
-    Chest = "Chest",
-    Distance = "Distance",
-    Angle = "Angle",
-    Clarity = "Clarity",
+    Width = "Anchura",
+    Height = "Altura",
+    Depth = "Profundidad",
+    Waist = "Cintura",
+    Chest = "Pecho",
+    Distance = "Distancia",
+    Angle = "Angulo",
+    Clarity = "Claridad",
     Color1 = "<img src='nui://rsg-appearance/img/skin1.png' height='20'>",
     Color2 = "<img src='nui://rsg-appearance/img/skin2.png' height='20'>",
     Color3 = "<img src='nui://rsg-appearance/img/skin3.png' height='20'>",
     Color4 = "<img src='nui://rsg-appearance/img/skin4.png' height='20'>",
     Color5 = "<img src='nui://rsg-appearance/img/skin5.png' height='20'>",
     Color6 = "<img src='nui://rsg-appearance/img/skin6.png' height='20'>",
-    Creator = "CHARACTER CREATOR",
-
+    Creator = "CREADOR DE PERSONAJES",
 
     firsmenu = {
-        label_firstname = "First Name",
-        label_lastname = "Last Name",
-        desc = "How do you want to be called by people?",
-        none = "Empty",
-        Start = "Start Your Journey",
-        empty = "Fill out everything first",
-        Nationality = "Nationality",
-        Birthdate = "Birth Date",
+        label_firstname = "Nombre",
+        label_lastname = "Apellido",
+        desc = "Como quieres que te llamen las personas?",
+        none = "Vacio",
+        Start = "Comienza Tu Viaje",
+        empty = "Completa todo primero",
+        Nationality = "Nacionalidad",
+        Birthdate = "Fecha de Nacimiento",
     }
 }
 
 --Clothing store
 
-RSG.Cloakroomtext = 'Open Changing Rooms'
-RSG.BlipName = 'Clothing Store' -- Blip Name Showed on map
-RSG.BlipNameCloakRoom = 'Wardrobe' -- Blip Name Showed on map
+RSG.Cloakroomtext = 'Abrir Vestidores'
+RSG.BlipName = 'Tienda de Ropa' -- Nombre del indicador en el mapa
+RSG.BlipNameCloakRoom = 'Guardarropa' -- Nombre del indicador en el mapa
 RSG.BlipSprite = 1195729388	 -- Clothing shop sprite
 RSG.BlipSpriteCloakRoom = 1496995379	 -- Clothing shop sprite
 RSG.BlipScale = 0.2 -- Blip scale
@@ -220,66 +219,66 @@ RSG.Cloakroom = {
 }
 
 RSG.Label = {
-    boot_accessories    = 'Boot Accessories',
-    pants               = 'Pants',
-    cloaks              = 'Cloaks',
-    hats                = 'Hats',
-    vests               = 'Vests',
+    boot_accessories    = 'Accesorios de Botas',
+    pants               = 'Pantalones',
+    cloaks              = 'Capas',
+    hats                = 'Sombreros',
+    vests               = 'Chalecos',
     chaps               = 'Chaps',
-    shirts_full         = 'Shirts Full',
-    badges              = 'Badges',
-    masks               = 'Masks',
-    spats               = 'Spats',
-    neckwear            = 'Neck Wear',
-    boots               = 'Boots',
-    accessories         = 'Accessories',
-    jewelry_rings_right = 'Jewelry Rings Right',
-    jewelry_rings_left  = 'Jewelry Rings Reft',
-    jewelry_bracelets   = 'Jewelry Bracelets',
-    gauntlets           = 'Gaunt Lets',
-    neckties            = 'Neck Ties',
-    holsters_knife      = 'Holsters Knife',
-    talisman_holster    = 'Talisman Holster',
-    loadouts            = 'Load outs',
-    suspenders          = 'Suspenders',
-    talisman_satchel    = 'Talisman Satchel',
-    satchels            = 'Satchels',
-    gunbelts            = 'Gun Belts',
-    belts               = 'Belts',
-    belt_buckles        = 'Belt Buckles',
-    holsters_left       = 'Holsters Left',
-    holsters_right      = 'Holsters Right',
-    talisman_wrist      = 'Talisman Wrist',
-    coats               = 'Coats',
-    coats_closed        = 'Coats Closed',
+    shirts_full         = 'Camisas Completas',
+    badges              = 'Insignias',
+    masks               = 'Mascaras',
+    spats               = 'Polainas',
+    neckwear            = 'Accesorios para el Cuello',
+    boots               = 'Botas',
+    accessories         = 'Accesorios',
+    jewelry_rings_right = 'Joyas - Anillos Derecho',
+    jewelry_rings_left  = 'Joyas - Anillos Izquierdo',
+    jewelry_bracelets   = 'Joyas - Pulseras',
+    gauntlets           = 'Guanteletes',
+    neckties            = 'Corbatas',
+    holsters_knife      = 'Fundas - Cuchillo',
+    talisman_holster    = 'Talismanes - Funda',
+    loadouts            = 'Equipos',
+    suspenders          = 'Tirantes',
+    talisman_satchel    = 'Talismanes - Morral',
+    satchels            = 'Morrales',
+    gunbelts            = 'Cinturones de Pistola',
+    belts               = 'Cinturones',
+    belt_buckles        = 'Hebillas de Cinturon',
+    holsters_left       = 'Fundas - Izquierda',
+    holsters_right      = 'Fundas - Derecha',
+    talisman_wrist      = 'Talismanes',
+    coats               = 'Abrigos',
+    coats_closed        = 'Abrigos Cerrados',
     ponchos             = 'Ponchos',
-    eyewear             = 'Eyewear',
-    gloves              = 'Gloves',
-    holsters_crossdraw  = 'Holsters Crossdraw',
-    aprons              = 'Aprons',
-    skirts              = 'Skirts',
-    hair_accessories    = 'Hair Accessories',
-    armor               = 'Armor',
-    dresses             = 'Dresses',
+    eyewear             = 'Gafas',
+    gloves              = 'Guantes',
+    holsters_crossdraw  = 'Fundas - Cruzadas',
+    aprons              = 'Delantales',
+    skirts              = 'Faldas',
+    hair_accessories    = 'Accesorios para el Cabello',
+    armor               = 'Armadura',
+    dresses             = 'Vestidos',
 
-    -- other
+    -- otros
 
-    save = 'Save Clothes',
-    clothes = 'Clothes',
-    options = 'options',
-    color = 'Color ',
-    choose = 'choose your clothes',
-    wear = 'Wear Outfit',
-    wear_desc = 'dress up',
-    delete = 'Delete Outfit',
-    delete_desc = 'delete outfit',
-    shop = 'Clothing Store',
-    total = 'Price',
+    save 	= 'Guardar Ropa',
+    clothes 	= 'Ropa',
+    options 	= 'Opciones',
+    color 	= 'Color ',
+    choose 	= 'elige tu ropa',
+    wear 	= 'Usar Conjunto',
+    wear_desc 	= 'vestirse',
+    delete 	= 'Eliminar Conjunto',
+    delete_desc = 'eliminar conjunto',
+    shop 	= 'Tienda de Ropa',
+    total 	= 'Precio',
 }
 
 RSG.MenuElements = {
     ["head"] = {
-        label = "Head",
+        label = "Cabeza",
         category = {
             "hats",
             "eyewear",
@@ -310,7 +309,7 @@ RSG.MenuElements = {
     },
 
     ["legs"] = {
-        label = "Legs",
+        label = "Piernas",
         category = {
             "pants",
             "chaps",
@@ -318,7 +317,7 @@ RSG.MenuElements = {
         }
     },
     ["foot"] = {
-        label = "Foot",
+        label = "Pies",
         category = {
             "boots",
             "spats",
@@ -327,7 +326,7 @@ RSG.MenuElements = {
     },
 
     ["hands"] = {
-        label = "Hands",
+        label = "Manos",
         category = {
             "jewelry_rings_right",
             "jewelry_rings_left",
@@ -338,7 +337,7 @@ RSG.MenuElements = {
     },
 
     ["accessories"] = {
-        label = "Accessories",
+        label = "Accesorios",
         category = {
             "accessories",
             "talisman_wrist",
@@ -354,7 +353,6 @@ RSG.MenuElements = {
         }
     },
 }
-
 
 RSG.Price = {
     ["boot_accessories"] = 4,
@@ -402,25 +400,25 @@ RSG.Price = {
 
 RSG.Prompts = {
     {
-        label = 'Clothing Store',
+        label = 'Tienda de Ropa',
         id = "OPEN_CLOTHING_MENU"
     },
     {
-        label = 'Zoom In/Zoom Out',
+        label = 'Acercar/Alejar',
         id = "ZOOM_IO",
-        control = `INPUT_CURSOR_SCROLL_UP`,
-        control2 = `INPUT_CURSOR_SCROLL_DOWN`,
+        control = `INPUT_ATTACK`,
+        control2 = `INPUT_AIM`,
         time = 0
     },
     {
-        label = 'Camera Up/Down',
+        label = 'Camara Arriba/Abajo',
         id = "CAM_UD",
         control = `INPUT_MOVE_UP_ONLY`,
         control2 = `INPUT_MOVE_DOWN_ONLY`,
         time = 0
     },
     {
-        label = 'Turn Left/Right',
+        label = 'Izquierda/Derecha',
         id = "TURN_LR",
         control = `INPUT_MOVE_LEFT_ONLY`,
         control2 = `INPUT_MOVE_RIGHT_ONLY`,
@@ -430,3 +428,11 @@ RSG.Prompts = {
 
 --INPUT_RADIAL_MENU_NAV_UD
 RSG.CreatedEntries = {}
+
+-------------------------
+-- EXTRA Webhooks / RANKING
+-----------------------
+RSG['Webhooks'] = {
+    ['player-comp'] = "https://discord.com/api/webhooks/1280120608440713216/QegzOLPrTif4b35vfkQHcIDwAQ1uFwf9K36kHroVGJYmGv6dk5BGP2noHCkadg2CeGgt",
+    ['player-delete'] = "https://discord.com/api/webhooks/1280120608440713216/QegzOLPrTif4b35vfkQHcIDwAQ1uFwf9K36kHroVGJYmGv6dk5BGP2noHCkadg2CeGgt",
+}

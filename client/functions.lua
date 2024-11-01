@@ -38,7 +38,7 @@ local hairs_list = require 'data.hairs_list'
 local clothing = require 'data.clothing'
 
 CreateThread(function()
-    local str = "Male"
+    local str = "Hombre"
     selectLeft = PromptRegisterBegin()
     PromptSetControlAction(selectLeft, RSG.Prompt.MalePrompt)
     str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -49,7 +49,7 @@ CreateThread(function()
     PromptSetGroup(selectLeft, PromptGroup1)
     PromptRegisterEnd(selectLeft)
 
-    str = "Female"
+    str = "Mujer"
     selectRight = PromptRegisterBegin()
     PromptSetControlAction(selectRight, RSG.Prompt.FemalePrompt)
     str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -60,7 +60,7 @@ CreateThread(function()
     PromptSetGroup(selectRight, PromptGroup1)
     PromptRegisterEnd(selectRight)
 
-    str = "Confirm"
+    str = "Confirmar"
     selectEnter = PromptRegisterBegin()
     PromptSetControlAction(selectEnter, RSG.Prompt.ConfirmPrompt)
     str = CreateVarString(10, 'LITERAL_STRING', str)
@@ -149,7 +149,7 @@ function GetHeadIndex(ped)
                 return i
             end
         end
-    return false
+	return false
 end
 
 function GetMetaPedAssetGuids(ped, index)
@@ -183,7 +183,7 @@ function ApplyOverlays(overlayTarget)
         end
     end
     while not Citizen.InvokeNative(0x31DC8D3F216D8509, textureId) do -- wait till texture fully loaded
-        Wait(0)
+        Citizen.Wait(0)
     end
     Citizen.InvokeNative(0x92DAABA2C1C10B0E, textureId) -- update texture
     Citizen.InvokeNative(0x8472A1789478F82F, textureId) -- reset texture
@@ -401,7 +401,7 @@ local defaultPitch, defaultRoll, defaultHeading, defaultZoom = -5.61, 0.00, -89.
 function StartSelectCam()
     cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", defaultX, defaultY, defaultZ, defaultPitch, defaultRoll, defaultHeading, defaultZoom, false, 0)
     cameraMale   = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", -560.47,   -3775.64, 239.09, -7.62,    0.00, -89.67,     defaultZoom,    false, 0)
-    cameraFemale = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", -560.47,   -3776.94,  239.09, -7.62,    0.00, -89.67,    defaultZoom,    false, 0)
+    cameraFemale = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", -560.47,   -3776.54,  239.09, -7.62,    0.00, -89.67,    defaultZoom,    false, 0)
     local HasZ, z = GetGroundZAndNormalFor_3dCoord(camloc.x, camloc.y, camloc.z + 0.5)
     CharacterCreatorCamera = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camloc.x, camloc.y, z + 1.5, 0.0, 0.0, camloc.w, 65.00, false, 0)
 end
@@ -424,7 +424,7 @@ CreatePedAtCoords = function(model, coords, isNetworked)
 end
 
 function StartPrompts()
-    lightsOn = false
+	lightsOn = false
     while IsInCharCreation do
         Wait(0)
         DrawLightWithRange(camloc.x, camloc.y, camloc.z, 255, 255, 255, 10.0, 100.0)
@@ -467,13 +467,13 @@ end
 
 function StartCharacterCreatorCamera(selected, camera)
 
-    ClothesCache = {}
-    CreatorCache = {}
-    Firstname = nil
-    Lastname = nil
-    Nationality = nil
-    Selectedsex = nil
-    Birthdate = nil
+	ClothesCache = {}
+	CreatorCache = {}
+	Firstname = nil
+	Lastname = nil
+	Nationality = nil
+	Selectedsex = nil
+	Birthdate = nil
 
     CreatorCache["sex"] = selected
     InCharacterCreator = false
@@ -494,7 +494,7 @@ function StartCharacterCreatorCamera(selected, camera)
     SetCamActive(CharacterCreatorCamera, true)
 
     RenderScriptCams(true, true, 1000, true, true, 0)
-    Citizen.InvokeNative(0x4D51E59243281D80, PlayerId(), true, 0, false)  --ENABLE PLAYER CONTROLS
+    Citizen.InvokeNative(0x4D51E59243281D80, PlayerId(), true, 0, false)  --ENABLE PLAYER CONTROLS 
     CreateThread(function()
         if DoesEntityExist(FemalePed) then
             DeletePed(FemalePed)
@@ -625,10 +625,11 @@ function FotoMugshots()
     CreateThread(function()
         while IsInCharCreation do
             Wait(0)
-            DrawText3D(-558.64, -3782.30, 238.5, FirstName .. " " .. LastName, { 255, 255, 255, 255 })
+            DrawText3D(-558.64, -3782.30, 238.4, FirstName, { 255, 255, 255, 255 })
+            DrawText3D(-558.64, -3782.30, 238.3, LastName, { 255, 255, 255, 255 })
         end
     end)
-    ShowBusyspinnerWithText("take a screenshot now")
+    ShowBusyspinnerWithText("Toma una captura de pantalla ahora")
     PlaySoundFrontend("Ready_Up_Flash", "RDRO_In_Game_Menu_Sounds", true, 0)
     TakePhoto()
     Wait(7000)
@@ -824,7 +825,7 @@ function LoadHair(target, data)
                 if tonumber(data.hair.model) > 0 then
                     if IsPedMale(target) then
                         if hairs_list["male"]["hair"][tonumber(data.hair.model)] ~= nil then
-                            if hairs_list["male"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)] ~= nil then
+                            if hairs_list["male"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)] ~= nil then       
                                 local hair = hairs_list["male"]["hair"][tonumber(data.hair.model)][tonumber(data.hair.texture)].hash
                                 NativeSetPedComponentEnabled(target, tonumber(hair), false, true, true)
                             end

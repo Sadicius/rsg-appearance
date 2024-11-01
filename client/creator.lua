@@ -283,13 +283,14 @@ RegisterCommand('loadskin', function(source, args, raw)
             isJailed = player.metadata["injail"]
         end)
 
-        if isdead or cuffed or hogtied or lassoed or dragged or ragdoll or falling or isJailed > 0 then
+        if isdead or cuffed or hogtied or lassoed or dragged or ragdoll or falling or isJailed > 0 then 
             return
         end
 
         ApplySkin()
 
 end, false)
+
 local function checkStrings(input)
     if RSG.ProfanityWords[input:lower()] then return false end
     if not string.match(input, '%u%l*') then
@@ -300,7 +301,7 @@ local function checkStrings(input)
 end
 
 function StartCreator()
-    TriggerServerEvent('rsg-appearance:server:SetPlayerBucket' , BucketId)
+    TriggerServerEvent("rsg-appearance:server:SetPlayerBucket" , BucketId)
     Wait(1)
     for i, m in pairs(Overlays.overlay_all_layers) do
         Overlays.overlay_all_layers[i] =
@@ -322,14 +323,14 @@ function FirstMenu()
 
     if (IsInCharCreation or Skinkosong) then
         elements[#elements + 1] = {
-            label = "Appearance",
+            label = "Apariencia",
             value = "appearance",
-            desc = "Choose Your Appearance"
+            desc = "Elige tu apariencia"
         }
         elements[#elements + 1] = {
-            label = "Clothing",
+            label = "Ropa",
             value = "clothes",
-            desc = "Choose Your Clothes"
+            desc = "Elige tu ropa"
         }
     end
 
@@ -337,21 +338,21 @@ function FirstMenu()
         elements[#elements + 1] = {
             label = Firstname or RSG.Texts.firsmenu.label_firstname .. "<br><span style='opacity:0.6;'>" .. RSG.Texts.firsmenu.none .. "</span>",
             value = "firstname",
-            desc = "Choose Your First Name",
+            desc = "Elige tu nombre",
         }
         elements[#elements + 1] = {
             label = Lastname or
                 RSG.Texts.firsmenu.label_lastname ..
                 "<br><span style='opacity:0.6;'>" .. "" .. RSG.Texts.firsmenu.none .. "" .. "</span>",
             value = "lastname",
-            desc = "Choose Your Last Name"
+            desc = "Elige tu apellido"
         }
         elements[#elements + 1] = {
             label = Nationality or
                 RSG.Texts.firsmenu.Nationality ..
                 "<br><span style='opacity:0.6;'>" .. "" .. RSG.Texts.firsmenu.none .. "" .. "</span>",
             value = "nationality",
-            desc = "Choose Your Nationality"
+            desc = "Elige tu nacionalidad"
 
         }
 
@@ -360,7 +361,7 @@ function FirstMenu()
                 RSG.Texts.firsmenu.Birthdate ..
                 "<br><span style='opacity:0.6;'>" .. "" .. RSG.Texts.firsmenu.none .. "" .. "</span>",
             value = "birthdate",
-            desc = "Choose Your Birth Date"
+            desc = "Elige tu fecha de nacimiento"
         }
     end
 
@@ -389,12 +390,12 @@ function FirstMenu()
 
                 :: noMatch ::
 
-                local dialog = lib.inputDialog('Registration', {
+                local dialog = lib.inputDialog('Registro', {
                     {
                         type = 'input',
                         required = true,
                         icon = 'user-pen',
-                        label = 'First Name',
+                        label = 'Nombre de pila',
                         placeholder = 'Hank'
                     },
                 })
@@ -413,12 +414,12 @@ function FirstMenu()
 
                 :: noMatch ::
 
-                local dialog = lib.inputDialog('Registration', {
+                local dialog = lib.inputDialog('Registro', {
                     {
                         type = 'input',
                         required = true,
                         icon = 'user-pen',
-                        label = 'Last name',
+                        label = 'Apellido',
                         placeholder = 'Jordan'
                     },
                 })
@@ -437,12 +438,12 @@ function FirstMenu()
 
                 :: noMatch ::
 
-                local dialog = lib.inputDialog('Registration', {
+                local dialog = lib.inputDialog('Registro', {
                     {
                         type = 'input',
                         required = true,
                         icon = 'user-shield',
-                        label = 'Nationality',
+                        label = 'Nacionalidad',
                         placeholder = 'Mexican'
                     },
                 })
@@ -459,15 +460,15 @@ function FirstMenu()
 
             if (data.current.value == 'birthdate') then
 
-                local dialog = lib.inputDialog('Registration', {
+                local dialog = lib.inputDialog('Registro', {
                     {
                         type = 'date',
                         required = true,
                         icon = 'calendar-days',
-                        label = 'Birth Date',
+                        label = 'Fecha de nacimiento',
                         format = 'YYYY-MM-DD',
                         returnString = true,
-                        min = '1750-01-01', -- Has to be in the same in the same format as the format argument
+                        min = '1850-01-01', -- Has to be in the same in the same format as the format argument
                         max = '1900-01-01', -- Has to be in the same in the same format as the format argument
                         default = '1870-01-01'
                     }
@@ -488,6 +489,7 @@ function FirstMenu()
             end
             if data.current.value == 'save' then
                 LoadedComponents = CreatorCache
+
                 if Skinkosong then
                     MenuData.CloseAll()
                     Skinkosong = false
@@ -495,7 +497,7 @@ function FirstMenu()
                     Lastname = RSGCore.Functions.GetPlayerData().charinfo.lastname
                     FotoMugshots()
                 elseif Firstname and Lastname and Nationality and Selectedsex and Birthdate and Cid then
-                    MenuData.CloseAll()
+					MenuData.CloseAll()
                     local newData = {
                         firstname = Firstname,
                         lastname = Lastname,
@@ -508,11 +510,11 @@ function FirstMenu()
                     Wait(500)
                     FotoMugshots()
                 else
-                    lib.notify({ title = 'Error', description = 'Need to fill out all of the informations about yourself first! (Firstname, Lastname, Nationality, Birthdate)', type = 'error', duration = 7000 })
+					lib.notify({ title = 'Error', description = 'Need to fill out all of the informations about yourself first! (Firstname, Lastname, Nationality, Birthdate)', type = 'error', duration = 7000 })
                 end
             end
         end, function(data, menu)
-        end)
+    end)
 end
 
 function MainMenu()
@@ -709,14 +711,14 @@ end
 
 function OpenEyesMenu()
     MenuData.CloseAll()
-    local EyesColorOptions = {RSG.Texts.EyesTone1,RSG.Texts.EyesTone2,RSG.Texts.EyesTone3,RSG.Texts.EyesTone4,RSG.Texts.EyesTone5,RSG.Texts.EyesTone5}
+    local EyesColorOptions = {RSG.Texts.EyesTone1,RSG.Texts.EyesTone2,RSG.Texts.EyesTone3,RSG.Texts.EyesTone4,RSG.Texts.EyesTone5,RSG.Texts.EyesTone5}                      
     local elements = {
         {label = RSG.Texts.Color,    value = CreatorCache["eyes_color"] or 1,    category = "eyes_color",    desc = "", type = "slider", min = 1,max = 18},
         {label = RSG.Texts.Depth,    value = CreatorCache["eyes_depth"] or 0,    category = "eyes_depth",    desc = "", type = "slider", min = -100, max = 100, hop = 5},
         {label = RSG.Texts.Angle,    value = CreatorCache["eyes_angle"] or 0,    category = "eyes_angle",    desc = "", type = "slider", min = -100, max = 100, hop = 5},
         {label = RSG.Texts.Distance, value = CreatorCache["eyes_distance"] or 0, category = "eyes_distance", desc = "", type = "slider", min = -100, max = 100, hop = 5}
     }
-    MenuData.Open('default', GetCurrentResourceName(), 'eyes_character_creator_menu',
+    MenuData.Open('default', GetCurrentResourceName(), 'eyes_character_creator_menu', 
     {title = RSG.Texts.Eyes, subtext = RSG.Texts.Options, align = RSG.Texts.align, elements = elements, itemHeight = "4vh"}, function(data, menu)
     end, function(data, menu)
         OpenFaceMenu()

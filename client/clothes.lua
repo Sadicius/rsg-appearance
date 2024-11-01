@@ -379,7 +379,7 @@ function camera(zoom, offset)
         y = coords.y + (zoomOffset * math.cos(angle)),
         z = coords.z + offset
     }
-
+    
     if not ClothingCamera then
         DestroyAllCams(true)
         ClothingCamera = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", pos.x, pos.y, pos.z, 300.00, 0.00, 0.00, 50.00, false, 0)
@@ -466,7 +466,7 @@ exports('GetClothesCurrentComponentHash', function(name)
         return 0
     end
     local hash
-    if IsPedMale(PlayerPedId()) then
+    if IsPedMale(cache.ped) then
         if clothing["male"][name] ~= nil then
             hash = clothing["male"][name][hash]
         end
@@ -475,6 +475,7 @@ exports('GetClothesCurrentComponentHash', function(name)
             hash = clothing["female"][name][hash]
         end
     end
+    print(hash, clothing, clothing["female"], json.encode(clothing["female"][name]), 'GetClothesCurrentComponentHash')
     return hash
 end)
 
@@ -631,7 +632,7 @@ end
 IsPromptCompleted = function(name)
     if RSG.Prompts[name] then
         return Citizen.InvokeNative(0xE0F65F0640EF0617, RSG.Prompts[name])
-    end
+    end 
     return false
 end
 
