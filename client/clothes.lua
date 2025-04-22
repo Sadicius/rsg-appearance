@@ -12,7 +12,6 @@ local image = "<img style='max-height:250px;max-width:250px;float: center;'src='
 
 local clothing = require 'data.clothing'
 
----@deprecated use inClothingStore state
 exports('IsCothingActive', function()
     return LocalPlayer.state.inClothingStore
 end)
