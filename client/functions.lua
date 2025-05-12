@@ -397,6 +397,7 @@ function SpawnPeds()
     end)
 end
 
+-- localtion camera
 local defaultX, defaultY, defaultZ = -561.93, -3776.27, 239.09
 local defaultPitch, defaultRoll, defaultHeading, defaultZoom = -5.61, 0.00, -89.74, 45.00
 
@@ -425,6 +426,74 @@ CreatePedAtCoords = function(model, coords, isNetworked)
     end
 end
 
+local function GetSafeCamZ(origin, targetZ)
+    local testRay = StartShapeTestRay(origin.x, origin.y, origin.z, origin.x, origin.y, targetZ, -1, PlayerPedId(), 0)
+    local hit, _, hitCoord = GetShapeTestResult(testRay)
+    if hit == 1 then
+        return hitCoord.z - 0.2
+    else
+        return targetZ
+    end
+end
+
+local function SmoothZoom(camera, toFov, duration)
+    local minFov, maxFov = RSG.smoothzoommin, RSG.smoothzoommax -- BONUS: Limitar zoom mínimo y máximo
+    toFov = math.max(minFov, math.min(maxFov, toFov)) -- Limita el objetivo
+
+    local fromFov = GetCamFov(camera)
+    local startTime = GetGameTimer()
+
+    while GetGameTimer() - startTime < duration do
+        local now = GetGameTimer()
+        local progress = (now - startTime) / duration
+        local currentFov = fromFov + (toFov - fromFov) * progress
+        SetCamFov(camera, currentFov)
+        Wait(0)
+    end
+
+    SetCamFov(camera, toFov)
+end
+
+function HandleCameraInputs(camera)
+    if not camera or not DoesCamExist(camera) then return end
+
+    local camCoords = GetCamCoord(camera)
+
+    -- Movimiento vertical
+    if IsControlPressed(2, RSG.Prompt.CameraUp) then
+        local z = math.min(camCoords.z + 0.01, camloc.z + 1)
+        local safeZ = GetSafeCamZ(camloc, z)
+        SetCamCoord(camera, camloc.x, camloc.y, safeZ)
+    end
+
+    if IsControlPressed(2, RSG.Prompt.CameraDown) then
+        local _, groundZ = GetGroundZAndNormalFor_3dCoord(camloc.x, camloc.y, camloc.z + 0.5)
+        local z = math.max(camCoords.z - 0.01, groundZ + 0.2)
+        local safeZ = GetSafeCamZ(camloc, z)
+        SetCamCoord(camera, camloc.x, camloc.y, safeZ)
+    end
+
+    -- Rotación del personaje
+    if IsControlPressed(2, RSG.Prompt.RotateLeft) then
+        local heading = GetEntityHeading(PlayerPedId())
+        SetPedDesiredHeading(PlayerPedId(), heading - 40)
+    end
+
+    if IsControlPressed(2, RSG.Prompt.RotateRight) then
+        local heading = GetEntityHeading(PlayerPedId())
+        SetPedDesiredHeading(PlayerPedId(), heading + 40)
+    end
+
+    -- Zoom con transición suave
+    if IsControlJustPressed(2, RSG.Prompt.Zoom1) then
+        SmoothZoom(camera, GetCamFov(cam) - 3.0, 300)
+    end
+
+    if IsControlJustPressed(2, RSG.Prompt.Zoom2) then
+        SmoothZoom(camera, GetCamFov(cam) + 3.0, 300)
+    end
+end
+
 function StartPrompts()
     lightsOn = false
     while IsInCharCreation do
@@ -433,37 +502,7 @@ function StartPrompts()
 
         local label = CreateVarString(10, 'LITERAL_STRING', RSG.GroupPromptText)
         PromptSetActiveGroupThisFrame(RoomPrompts, label)
-
-        if IsControlPressed(2, RSG.Prompt.CameraUp) then
-            local CamCoords = GetCamCoord(CharacterCreatorCamera)
-            local z = math.min(CamCoords.z + 0.01, camloc.z + 1)
-            SetCamCoord(CharacterCreatorCamera, camloc.x, camloc.y, z)
-        end
-
-        if IsControlPressed(2, RSG.Prompt.CameraDown) then
-            local CamCoords = GetCamCoord(CharacterCreatorCamera)
-            local HasZ, PosZ = GetGroundZAndNormalFor_3dCoord(camloc.x, camloc.y, camloc.z + 0.5)
-            local z = math.max(CamCoords.z - 0.01, PosZ + 0.2)
-            SetCamCoord(CharacterCreatorCamera, camloc.x, camloc.y, z)
-        end
-
-        if IsControlPressed(2, RSG.Prompt.RotateLeft) then
-            local heading = GetEntityHeading(PlayerPedId())
-            SetPedDesiredHeading(PlayerPedId(), heading - 40)
-        end
-
-        if IsControlPressed(2, RSG.Prompt.RotateRight) then
-            local heading = GetEntityHeading(PlayerPedId())
-            SetPedDesiredHeading(PlayerPedId(), heading + 40)
-        end
-
-        if IsControlPressed(2, RSG.Prompt.Zoom1) then
-            SetCamFov(CharacterCreatorCamera, GetCamFov(CharacterCreatorCamera) - 1.5)
-        end
-
-        if IsControlPressed(2, RSG.Prompt.Zoom2) then
-            SetCamFov(CharacterCreatorCamera, GetCamFov(CharacterCreatorCamera) + 1.5)
-        end
+        HandleCameraInputs(CharacterCreatorCamera)
     end
 end
 
@@ -484,7 +523,7 @@ function StartCharacterCreatorCamera(selected, camera)
     Wait(1000)
     DoScreenFadeOut(3000)
     Wait(3000)
-
+    ClearFocus()
     Citizen.InvokeNative(0x203BEFFDBE12E96A, PlayerPedId(), pedloc, false, false, false)
     local Sexmodel = GetPedModel(selected)
     LoadModel(PlayerPedId(), Sexmodel)
@@ -594,8 +633,8 @@ function GetGender()
     return "Male"
 end
 
-function SetCamFocusDistance(cam, focus)
-    N_0x11f32bb61b756732(cam, focus)
+function SetCamFocusDistance(camera, focus)
+    N_0x11f32bb61b756732(camera, focus)
 end
 
 function FotoMugshots()
