@@ -8,7 +8,8 @@ RSG.ProfanityWords = {
     ['ass'] = true
 }
 
-RSG.smoothzoommin = 30.0
+RSG.zoomAmount = 1.5
+RSG.smoothzoommin = 15.0
 RSG.smoothzoommax = 90.0
 RSG.CameraPromptText = 'Up/Down'
 RSG.RotatePromptText = 'Left/Right'

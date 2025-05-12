@@ -1,8 +1,38 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 
 local textureId = -1
-local pedloc = vector4(-558.0, -3781.0, 239.0, 91.0)
-local camloc = vector4(-560.0, -3781.0, 239.0, 268.0)
+
+-- requerimment light space
+local loadsphere = vector3(-561.4, -3782.6, 237.6) -- in Setup() // Creates a loading zone around the given coordinates to ensure the world loads correctly. This prevents glitches or missing environment elements.
+local loadsphereCoords = vector3(-549.4303588867188, -3778.28271484375, 238.597412109375)
+local lightCoords = vector3(-560.1646, -3782.066, 238.5975) -- light loop for select character
+-- requerimment PlayerPedId()
+local pedloc = vector4(-558.0, -3781.0, 239.0, 91.0) -- pedCreator Position
+
+-- requeriment to Male and Female in selected Sex no touch
+local MaleStart = vector3(-560.47, -3775.64, 239.09) -- MalePed selected in StartSelectCam()
+local MaleStartRot = vector3( -7.62, 0.00, -89.67)
+local FemaleStart = vector3(-560.47, -3776.94,  239.09) -- FemalePed selected in StartSelectCam()
+local FemaleStartRot = vector3( -7.62, 0.00, -89.67)
+
+-- coords start Foto Mugshots
+local MugshotsCam = vector3(-560.55, -3782.15, 238.93)
+local MugshotsRot = vector3(-5.73, 0.00, -96.05)
+local MugshotsName = vector3(-558.64, -3782.30, 238.5) -- text for name
+
+-- LoadCamera / position Sphere
+
+-- FirstCamera / position Offset to pedloc + cameraOffset
+local cameraOffset = vector3(-3.93, 4.73, -0.30) -- menu select gender
+local StartCam = vector3(pedloc.x + cameraOffset.x, pedloc.y + cameraOffset.y, pedloc.z + cameraOffset.z)
+local StartCamRot = vector3(-5.61, 0.00, -89.74) -- in StartSelectCam() // change position pedloc for start selection male or female
+
+-- SecondCamera / position Offset to pedloc + customoffset
+local customOffset = vector3(-2.0, 0.00, 0.0) -- menu creator
+local CustomModify = vector3(pedloc.x + customOffset.x, pedloc.y + customOffset.y, pedloc.z + customOffset.z)
+
+local defaultZoom = RSG.smoothzoommax / 2.25
+
 local animscene
 local selectRight
 local selectLeft
@@ -17,6 +47,8 @@ local isSelectSexActive
 local torso = 0
 local legs = 0
 local lightsOn = false
+local Foutfit = math.random(1, 10) or 3
+local Moutfit = math.random(1, 10) or 3
 
 ComponentsClothesMale = {}
 ComponentsClothesFemale = {}
@@ -235,11 +267,12 @@ local function Setup()
     Wait(2000)
     exports.weathersync:setMyTime(0, 0, 0, 0, true)
     lightsOn = true
-    Citizen.InvokeNative(0x513F8AA5BF2F17CF, -561.4, -3782.6, 237.6, 50.0, 20) -- loadshpere
+    Citizen.InvokeNative(0x513F8AA5BF2F17CF, loadsphere.x, loadsphere.y, loadsphere.z, 50.0, 20) -- loadshpere
     Citizen.InvokeNative(0x9748FA4DE50CCE3E, "AZL_RDRO_Character_Creation_Area", true, true) -- load sound
     Citizen.InvokeNative(0x9748FA4DE50CCE3E, "AZL_RDRO_Character_Creation_Area_Other_Zones_Disable", false, true) -- load sound
     SetTimecycleModifier('Online_Character_Editor')
-    SetEntityCoords(PlayerPedId(), -549.4303588867188, -3778.28271484375, 238.597412109375, false, false, false, false) -- coords of where it spawns
+    -- SetEntityCoords(PlayerPedId(), -549.4303588867188, -3778.28271484375, 238.597412109375, false, false, false, false) -- coords of where it spawns
+    SetEntityCoords(PlayerPedId(), loadsphereCoords.x, loadsphereCoords.y, loadsphereCoords.z, false, false, false, false) -- coords of where it spawns
     while not HasCollisionLoadedAroundEntity(PlayerPedId()) do
         Wait(500)
     end
@@ -258,12 +291,12 @@ function SpawnPeds()
     LoadPlayer(fModel)
     FemalePed = CreatePed(fModel, vector4(0.0, 0.0, 0.0, 0.0), false)
     SetModelAsNoLongerNeeded(fModel)
-    SetPedOutfitPreset(FemalePed, 3, true)
+    SetPedOutfitPreset(FemalePed, Foutfit, true)
 
     LoadPlayer(mModel)
     MalePed = CreatePed(mModel, vector4(0.0, 0.0, 0.0, 0.0), false)
     SetModelAsNoLongerNeeded(mModel)
-    SetPedOutfitPreset(MalePed, 3, true)
+    SetPedOutfitPreset(MalePed, Moutfit, true)
 
     Sheriff = CreatePedAtCoords(`MP_U_M_O_BlWPoliceChief_01`, vector4(0.0, 0.0, 0.0, 0.0), false)
     Citizen.InvokeNative(0x283978A15512B2FE, Sheriff, true)
@@ -298,6 +331,8 @@ function SpawnPeds()
     DoScreenFadeIn(1000)
     Wait(14000)
     InCharacterCreator = true
+
+    ClearFocus()
     StartSelectCam()
     SetCamActive(cam, true)
     RenderScriptCams(true, true, 1000, true, false)
@@ -324,21 +359,23 @@ function SpawnPeds()
                 if IsCamActive(cameraMale) and isSelectSexActive then
                     Label = CreateVarString(10, "LITERAL_STRING", "Male")
                 end
-
+                ClearFocus()
                 PromptSetActiveGroupThisFrame(PromptGroup1, Label)
 
                 if Citizen.InvokeNative(0xC92AC953F0A982AE, selectLeft) then
                     PlaySoundFrontend("gender_left", "RDRO_Character_Creator_Sounds", true, 0)
                     PromptSetEnabled(selectEnter, 1)
+
                     if IsCamActive(cam) then
-                        SetCamActiveWithInterp(cameraMale, cam, 2000, 0, 0)
+
+                        SetCamActiveWithInterp(cameraMale, cam, 1000, 0, 0)
                         SetCamActive(cam, false)
                     elseif IsCamActive(cameraMale) then
-                        SetCamActiveWithInterp(cam, cameraMale, 2000, 0, 0)
+                        SetCamActiveWithInterp(cam, cameraMale, 1000, 0, 0)
                         SetCamActive(cameraMale, false)
                         PromptSetEnabled(selectEnter, 0)
                     elseif IsCamActive(cameraFemale) then
-                        SetCamActiveWithInterp(cameraMale, cameraFemale, 2000, 0, 0)
+                        SetCamActiveWithInterp(cameraMale, cameraFemale, 1000, 0, 0)
                         SetCamActive(cameraFemale, false)
                         PromptSetEnabled(selectEnter, 1)
                     end
@@ -350,14 +387,14 @@ function SpawnPeds()
                     PlaySoundFrontend("gender_right", "RDRO_Character_Creator_Sounds", true, 0)
                     PromptSetEnabled(selectEnter, 1)
                     if IsCamActive(cam) then
-                        SetCamActiveWithInterp(cameraFemale, cam, 2000, 0, 0)
+                        SetCamActiveWithInterp(cameraFemale, cam, 1000, 0, 0)
                         SetCamActive(cam, false)
                     elseif IsCamActive(cameraMale) then
-                        SetCamActiveWithInterp(cameraFemale, cameraMale, 2000, 0, 0)
+                        SetCamActiveWithInterp(cameraFemale, cameraMale, 1000, 0, 0)
                         SetCamActive(cameraMale, false)
                         PromptSetEnabled(selectEnter, 1)
                     elseif IsCamActive(cameraFemale) then
-                        SetCamActiveWithInterp(cam, cameraFemale, 2000, 0, 0)
+                        SetCamActiveWithInterp(cam, cameraFemale, 1000, 0, 0)
                         SetCamActive(cameraFemale, false)
                         PromptSetEnabled(selectEnter, 0)
                     end
@@ -371,7 +408,7 @@ function SpawnPeds()
 
                     if IsCamActive(cameraMale) then
                         Citizen.InvokeNative(0xAB5E7CAB074D6B84, animscene, ("Pl_Start_to_Edit_Male"))
-                        SetCamActiveWithInterp(cam, cameraMale, 2000, 0, 0)
+                        SetCamActiveWithInterp(cam, cameraMale, 1000, 0, 0)
                         SetCamActive(cameraMale, false)
                         local selectedSex = 1
                         StartCharacterCreatorCamera(selectedSex, cameraMale)
@@ -379,7 +416,7 @@ function SpawnPeds()
                         Citizen.InvokeNative(0x4D51E59243281D80, PlayerId(), false, 0, true) -- DISABLE PLAYER CONTROLS
                     elseif IsCamActive(cameraFemale) then
                         Citizen.InvokeNative(0xAB5E7CAB074D6B84, animscene, ("Pl_Start_to_Edit_Female"))
-                        SetCamActiveWithInterp(cam, cameraFemale, 2000, 0, 0)
+                        SetCamActiveWithInterp(cam, cameraFemale, 1000, 0, 0)
                         SetCamActive(cameraFemale, false)
                         local selectedSex = 2
                         StartCharacterCreatorCamera(selectedSex, cameraFemale)
@@ -398,17 +435,21 @@ function SpawnPeds()
 end
 
 -- localtion camera
-local defaultX, defaultY, defaultZ = -561.93, -3776.27, 239.09
-local defaultPitch, defaultRoll, defaultHeading, defaultZoom = -5.61, 0.00, -89.74, 45.00
-
-function StartSelectCam()
-    cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", defaultX, defaultY, defaultZ, defaultPitch, defaultRoll, defaultHeading, defaultZoom, false, 0)
-    cameraMale   = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", -560.47,   -3775.64, 239.09, -7.62,    0.00, -89.67,     defaultZoom,    false, 0)
-    cameraFemale = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", -560.47,   -3776.94,  239.09, -7.62,    0.00, -89.67,    defaultZoom,    false, 0)
-    local HasZ, z = GetGroundZAndNormalFor_3dCoord(camloc.x, camloc.y, camloc.z + 0.5)
-    CharacterCreatorCamera = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camloc.x, camloc.y, z + 1.5, 0.0, 0.0, camloc.w, 65.00, false, 0)
+function StartCharacterCreatorCam()
+    CharacterCreatorCamera = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
+    AttachCamToEntity(CharacterCreatorCamera, PlayerPedId(), customOffset.x, customOffset.y, customOffset.z, true)
+    SetCamRot(CharacterCreatorCamera, 0.0, 0.0, GetEntityHeading(PlayerPedId()) - 90.0, 2) -- ligera inclinación y mirando de frente
+    SetCamFov(CharacterCreatorCamera, RSG.smoothzoommax)
 end
 
+function StartSelectCam()
+    cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", StartCam.x, StartCam.y, StartCam.z, StartCamRot.x, StartCamRot.y, StartCamRot.z, defaultZoom, false, 0)
+    cameraMale   = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", MaleStart.x,  MaleStart.y,  MaleStart.z, MaleStartRot.x, MaleStartRot.y, MaleStartRot.z, defaultZoom, false, 0)
+    cameraFemale = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", FemaleStart.x,  FemaleStart.y,  FemaleStart.z, FemaleStartRot.x, FemaleStartRot.y, FemaleStartRot.z, defaultZoom, false, 0)
+    StartCharacterCreatorCam()
+end
+
+-- create peds animations
 CreatePedAtCoords = function(model, coords, isNetworked)
     if type(model) ~= "number" then model = joaat(model) end
 
@@ -426,51 +467,56 @@ CreatePedAtCoords = function(model, coords, isNetworked)
     end
 end
 
-local function GetSafeCamZ(origin, targetZ)
-    local testRay = StartShapeTestRay(origin.x, origin.y, origin.z, origin.x, origin.y, targetZ, -1, PlayerPedId(), 0)
-    local hit, _, hitCoord = GetShapeTestResult(testRay)
-    if hit == 1 then
-        return hitCoord.z - 0.2
-    else
-        return targetZ
-    end
-end
-
-local function SmoothZoom(camera, toFov, duration)
-    local minFov, maxFov = RSG.smoothzoommin, RSG.smoothzoommax -- BONUS: Limitar zoom mínimo y máximo
-    toFov = math.max(minFov, math.min(maxFov, toFov)) -- Limita el objetivo
-
-    local fromFov = GetCamFov(camera)
+local function SmoothZoom(camera, fromFov, toFov, duration)
     local startTime = GetGameTimer()
-
-    while GetGameTimer() - startTime < duration do
+    while true do
         local now = GetGameTimer()
-        local progress = (now - startTime) / duration
+        local elapsed = now - startTime
+        if elapsed >= duration then break end
+
+        local progress = elapsed / duration
         local currentFov = fromFov + (toFov - fromFov) * progress
         SetCamFov(camera, currentFov)
         Wait(0)
     end
-
     SetCamFov(camera, toFov)
+end
+
+local function AdjustZoom(camera, increase)
+    if not camera then return end
+
+    -- Zoom suave en 150ms (ajustable)
+    local currentFov = GetCamFov(camera)
+    local targetFov = increase and (currentFov + 5.0) or (currentFov - 5.0)
+    targetFov = math.clamp(targetFov, RSG.smoothzoommin, RSG.smoothzoommax)
+    CreateThread(function()
+        SmoothZoom(camera, currentFov, targetFov, 300)
+    end)
 end
 
 function HandleCameraInputs(camera)
     if not camera or not DoesCamExist(camera) then return end
 
     local camCoords = GetCamCoord(camera)
+    ClearFocus()
 
-    -- Movimiento vertical
-    if IsControlPressed(2, RSG.Prompt.CameraUp) then
-        local z = math.min(camCoords.z + 0.01, camloc.z + 1)
-        local safeZ = GetSafeCamZ(camloc, z)
-        SetCamCoord(camera, camloc.x, camloc.y, safeZ)
+
+    if IsControlPressed(2, RSG.Prompt.Zoom1) then
+        AdjustZoom(camera, false)
+    end
+    if IsControlPressed(2, RSG.Prompt.Zoom2) then
+        AdjustZoom(camera, true)
+    end
+
+     if IsControlPressed(2, RSG.Prompt.CameraUp) then
+        local z = math.min(camCoords.z + 0.02, CustomModify.z + 1)
+        SetCamCoord(camera, CustomModify.x, CustomModify.y, z)
     end
 
     if IsControlPressed(2, RSG.Prompt.CameraDown) then
-        local _, groundZ = GetGroundZAndNormalFor_3dCoord(camloc.x, camloc.y, camloc.z + 0.5)
-        local z = math.max(camCoords.z - 0.01, groundZ + 0.2)
-        local safeZ = GetSafeCamZ(camloc, z)
-        SetCamCoord(camera, camloc.x, camloc.y, safeZ)
+        local HasZ, PosZ = GetGroundZAndNormalFor_3dCoord(CustomModify.x, CustomModify.y, CustomModify.z + 0.5)
+        local z = math.max(camCoords.z - 0.02, PosZ + 0.2)
+        SetCamCoord(camera, CustomModify.x, CustomModify.y, z)
     end
 
     -- Rotación del personaje
@@ -483,22 +529,13 @@ function HandleCameraInputs(camera)
         local heading = GetEntityHeading(PlayerPedId())
         SetPedDesiredHeading(PlayerPedId(), heading + 40)
     end
-
-    -- Zoom con transición suave
-    if IsControlJustPressed(2, RSG.Prompt.Zoom1) then
-        SmoothZoom(camera, GetCamFov(cam) - 3.0, 300)
-    end
-
-    if IsControlJustPressed(2, RSG.Prompt.Zoom2) then
-        SmoothZoom(camera, GetCamFov(cam) + 3.0, 300)
-    end
 end
 
 function StartPrompts()
     lightsOn = false
     while IsInCharCreation do
         Wait(0)
-        DrawLightWithRange(camloc.x, camloc.y, camloc.z, 255, 255, 255, 10.0, 100.0)
+        DrawLightWithRange(pedloc.x, pedloc.y, pedloc.z, 255, 255, 255, 10.0, 100.0)
 
         local label = CreateVarString(10, 'LITERAL_STRING', RSG.GroupPromptText)
         PromptSetActiveGroupThisFrame(RoomPrompts, label)
@@ -529,7 +566,9 @@ function StartCharacterCreatorCamera(selected, camera)
     LoadModel(PlayerPedId(), Sexmodel)
     FixIssues(PlayerPedId())
     SetEntityVisible(PlayerPedId(), true)
-    RenderScriptCams(false, true, 3000, true, true, 0)
+    RenderScriptCams(false, true, 1000, true, true, 0)
+
+    ClearFocus()
     SetCamActive(cam, false)
     SetCamActive(camera, false)
     SetCamActive(CharacterCreatorCamera, true)
@@ -629,7 +668,6 @@ function GetGender()
     if not IsPedMale(PlayerPedId()) then
         return "Female"
     end
-
     return "Male"
 end
 
@@ -638,6 +676,8 @@ function SetCamFocusDistance(camera, focus)
 end
 
 function FotoMugshots()
+
+    ClearFocus()
     PromptSetVisible(CameraPrompt, 0)
     PromptSetVisible(RotatePrompt, 0)
     PromptSetVisible(ZoomPrompt, 0)
@@ -646,7 +686,7 @@ function FotoMugshots()
     local animscenes = SetupScenes("Pl_Edit_to_Photo_" .. GetGender())
     StartAnimScene(animscenes)
     repeat Wait(0) until Citizen.InvokeNative(0xCBFC7725DE6CE2E0, animscenes)
-    local NewCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", -560.55, -3782.15, 238.93, -5.73, 0.00, -96.05, 45, false, 0)
+    local NewCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", MugshotsCam.x, MugshotsCam.y, MugshotsCam.z, MugshotsRot.x, MugshotsRot.y, MugshotsRot.z, 45, false, 0)
     SetCamFov(NewCam, 40.0)
     RenderScriptCams(true, false, 0, true, true, 0)
     Wait(2100)
@@ -665,7 +705,7 @@ function FotoMugshots()
     CreateThread(function()
         while IsInCharCreation do
             Wait(0)
-            DrawText3D(-558.64, -3782.30, 238.5, FirstName .. " " .. LastName, { 255, 255, 255, 255 })
+            DrawText3D(MugshotsName.x, MugshotsName.y, MugshotsName.z, FirstName .. " " .. LastName, { 255, 255, 255, 255 })
         end
     end)
     ShowBusyspinnerWithText("take a screenshot now")
@@ -1229,7 +1269,7 @@ CreateThread(function()
         local sleep = 1000
         if lightsOn then
             sleep = 1
-            DrawLightWithRange(-560.1646, -3782.066, 238.5975, 255, 255, 255, 10.0, 100.0)
+            DrawLightWithRange(lightCoords.x, lightCoords.y, lightCoords.z, 255, 255, 255, 10.0, 100.0)
         end
         Wait(sleep)
     end
